@@ -25,3 +25,5 @@ python main.py
 - 打开蓝牙连接mindwave设备
 - 点击main.html的connect按钮
 
+# demo
+![](img/demo.png)
