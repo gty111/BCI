@@ -26,4 +26,5 @@ python main.py
 - 点击main.html的Ifconnect按钮
 
 # demo
-![](img/demo.png)
+![](img/demo1.png)
+![](img/demo2.png)
