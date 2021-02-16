@@ -2,7 +2,7 @@
 
 > 基于神念科技(NeuroSky)的mindwave MOBILE2 的脑机接口GUI
 - algorithm 中存放原始数据和算法代码
-- Interface 中存放脑机接口的前后端代码以及算法模型
+- Interface 中存放脑机接口的前后端代码以及算法模型(可以直接运行)
 
 ## 设备
 
