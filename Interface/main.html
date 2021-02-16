@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>EEG</title>
+		<style type="text/css">
+            .progress{
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                margin: auto;
+                width: 100px;
+                height: 100px;
+                text-align: center;
+                line-height: 100px;
+                font-size: 22px;
+            }
+            
+            .progress span {
+				visibility: hidden;
+                display: block;//block
+                left: 10px;
+                top: 10px;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                -webkit-box-shadow: 0 3px 0 #666;
+                        box-shadow: 0 3px 0 #666;
+                -webkit-animation: myicon 1s infinite linear;
+                        animation: myicon 1s infinite linear;
+            }
+            @-webkit-keyframes myicon {
+                0% {
+                    -webkit-transform: rotate(0deg);
+                }
+                100% {
+                    -webkit-transform: rotate(360deg);
+                }
+            }
+            @keyframes myicon {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+            .buttons {
+                font-size: 2em;
+                display: flex;
+                justify-content: center;
+            }
+            .button:hover{
+                margin-top:40px;
+                box-shadow: 0px 15px 10px -5px #7A7A7A,
+                            -3px 0px 6px -5px #7A7A7A,
+                            0px 3px 6px -5px #7A7A7A;
+            }
+			.button{
+                line-height: 1;
+                padding: 2rem;
+                margin: 2rem;
+                border: medium solid;
+                min-height: 1em;
+                min-width: 1em;
+				cursor: pointer;
+                user-select: none;
+                border-radius:15px;
+                transition-duration:0.5s;
+                transition-timing-function:ease;
+            }
+			.connect{
+				color : red;
+			}
+			.help{
+    			width:700px;
+    			height:150px;
+    			margin : 0 auto; //up right down left
+			}
+			.band{
+    			width:1100px;
+    			height:800px;//border:1px solid #000;
+    			margin: 0 auto;
+			}
+			.img_band{
+    			float:right;
+    			margin : 0px 200px 10px 0px;
+			}
+			.select{
+    			float:left;
+    			margin : 30px 0px 10px 250px;
+			}
+        </style>
+    </head>
+    <body>
+		<h1 style="text-align:center"> EEG GUI INTERFACE </h1>
+		<div class="help doc">
+    		<p>What can you do from this web app:</p>
+    		<ul>
+              <li><strong>connect</strong> to ThinkGear Mindwave Mobile 2(click the "IfConnected" button)</li>
+			  <li>show <strong>raw data</strong> from the device in <strong>real time</strong></li>
+              <li>show <strong>frequency band</strong> calculated from the raw data and select which one to show</li>
+              <li>show <strong>emotion state</strong> calculated from the raw data</li>
+			  <li>to shut down the backstage program you can click the "IfConnected" button again</li>
+            </ul>
+        </div>
+		<div class="buttons">
+				<div class="connect button">IfConnected</div>
+		</div>
+		<div class="progress">
+			<span id="load"></span>
+		</div>
+		<p style="text-align:center"><img id="img_data_raw" alt="show raw data" src="img/data_raw.png"></img></p>
+        <br><br>
+		<p style="text-align:center"><img id="img_data_pre" alt="show the prediction of emotion" src="img/data_pre.png"></img></p>
+        <br><br>
+		<div class="band">
+    		<div class="img_band">
+        		<img id="img_data_band" alt="show frequency band" src="img/data_band.png"></img>
+        	</div>
+        	<div class="select">
+        		<input type="checkbox" id="theta" checked="checked" onclick="chk1()"/>theta<br />
+        		<input type="checkbox" id="alpha" checked="checked" onclick="chk2()"/>alpha<br />
+        		<input type="checkbox" id="low_beta" checked="checked" onclick="chk3()"/>low_beta<br />
+        		<input type="checkbox" id="high_beta" checked="checked" onclick="chk4()"/>high_beta<br />
+        		<input type="checkbox" id="gamma" checked="checked" onclick="chk5()"/>gamma<br />
+    		</div>
+		</div>
+		<script>
+			var connect = document.querySelector('.connect');
+			var img_data_raw = document.getElementById('img_data_raw');
+			var img_data_band = document.getElementById('img_data_band');
+			var load = document.getElementById('load');
+			var theta = document.getElementById('theta');
+			var alpha = document.getElementById('alpha');
+			var low_beta = document.getElementById('low_beta');
+			var high_beta = document.getElementById('high_beta');
+			var gamma = document.getElementById('gamma');
+			var state_checkbox = [1,1,1,1,1];
+			var websocket = new WebSocket("ws://127.0.0.1:5678/");
+			
+			function chk1()
+			{
+                if(theta.checked==true){
+                    state_checkbox[0] = 1;
+                }else{
+                    state_checkbox[0] = 0;
+                }
+                websocket.send(JSON.stringify({action:'change_state',state_checkbox:state_checkbox}));
+            }
+            function chk2()
+			{
+                if(alpha.checked==true){
+                    state_checkbox[1] = 1;
+                }else{
+                    state_checkbox[1] = 0;
+                }
+                websocket.send(JSON.stringify({action:'change_state',state_checkbox:state_checkbox}));
+            }
+            function chk3()
+			{
+                if(low_beta.checked==true){
+                    state_checkbox[2] = 1;
+                }else{
+                    state_checkbox[2] = 0;
+                }
+                websocket.send(JSON.stringify({action:'change_state',state_checkbox:state_checkbox}));
+            }
+            function chk4()
+			{
+                if(high_beta.checked==true){
+                    state_checkbox[3] = 1;
+                }else{
+                    state_checkbox[3] = 0;
+                }
+                websocket.send(JSON.stringify({action:'change_state',state_checkbox:state_checkbox}));
+            }
+            function chk5()
+			{
+                if(gamma.checked==true){
+                    state_checkbox[4] = 1;
+                }else{
+                    state_checkbox[4] = 0;
+                }
+                websocket.send(JSON.stringify({action:'change_state',state_checkbox:state_checkbox}));
+            }
+			function remind()
+			{
+				websocket.send(JSON.stringify({action:'timer',state_checkbox:state_checkbox}));
+			}
+			
+			connect.onclick = function(event)
+			{
+				load.style.visibility = "visible";
+				try{
+					websocket.send(JSON.stringify({action:'connect'}));
+				}
+				catch(err){
+					load.style.visibility = "hidden";
+					window.alert("failed to connect backend!");
+				}
+			}
+			websocket.onmessage = function (event)
+			{
+				data = JSON.parse(event.data);
+				switch (data.type) 
+				{
+					case 'connect':
+						if(data.connect_state==0)
+						{
+							load.style.visibility = "hidden";
+							connect.style.color = 'red';
+						}
+						else if(data.connect_state==1)
+						{
+							var timer = self.setInterval("remind()",300);
+							load.style.visibility = "hidden";
+							connect.style.color = 'green';
+						}
+						break;
+					case 'packet':
+						img_data_raw.src = data.fig_raw;
+						img_data_band.src = data.fig_band;
+						img_data_pre.src = data.fig_pre;
+						break;
+					case 'err':
+						window.alert("failed to connect device!");
+						load.style.visibility = "hidden";
+					default:
+						console.error("unsupported event",data);
+				}
+			}
+		</script>
+    </body>
+</html>
