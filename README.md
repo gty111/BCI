@@ -45,7 +45,7 @@
 
 > 基于python开发
 >
-> 基于mindwavemobile(python 包)开发
+> 基于[mindwavemobile(python 包)](https://github.com/robintibor/python-mindwave-mobile/)开发
 
 - 连接设备并加载lightgbm模型后，开一个新线程循环读设备传回的原始数据，并且定时根据原始数据计算频段和预测情绪数据，存储到一个全局共享变量中供主线程读取
 
